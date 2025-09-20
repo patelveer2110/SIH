@@ -13,7 +13,7 @@ pipeline = joblib.load("crop_yield_pipeline.joblib")
 df = pd.read_csv("crop_data.csv")
 
 # Weather API config
-WEATHER_API_KEY = "YOUR_OPENWEATHERMAP_API_KEY"  # Replace with your key
+WEATHER_API_KEY = "ae73a01081470fad3daeac0055c9567d"  # Replace with your key
 WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 # Unique values for dropdowns
@@ -117,7 +117,7 @@ def generate_recommendations(row):
     improved_row = apply_suggestions(row)
     base_yield = pipeline.predict(pd.DataFrame([row]))[0]
     improved_yield = pipeline.predict(pd.DataFrame([improved_row]))[0]
-    recs.append(f"Predicted yield: {base_yield:.2f} kg/ha")
+    # recs.append(f"Predicted yield: {base_yield:.2f} kg/ha")
     recs.append(f"Predicted yield with suggestions: {improved_yield:.2f} kg/ha (+{((improved_yield-base_yield)/base_yield*100):.1f}%)")
     return recs
 
@@ -129,7 +129,7 @@ def predict():
         return jsonify({"error":"No input data provided"}),400
     full_input = prepare_input(data)
     df_input = pd.DataFrame([full_input])
-    predicted_yield = pipeline.predict(df_input)[0]
+    predicted_yield = float(pipeline.predict(df_input)[0])
     recommendations = generate_recommendations(full_input)
     return jsonify({
         "predicted_yield_kg_per_ha": round(predicted_yield,2),
